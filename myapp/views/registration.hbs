@@ -206,7 +206,7 @@
                   console.log(data.data.pImg);
                     $('#tableId').append('<tr id="'+data.data._id+'"><td>'+data.data.firstName+'</td><td>'+data.data.lastName+'</td><td>'+data.data.gender+'</td><td>'+data.data.address+
                       '</td><td><img style="width: 100px" src=/images/'+data.data.pImg+
-                      '></td><td> <button type="button" id="userEdit2"  class="userEdit" >Edit</button> | <button type="button" id="btndelete'+data.data._id+'" class="userDelete" onclick="fndelete(this,2)">Delete</button> </td></tr>');                        
+                      '></td><td> <button type="button" id="userEdit2" data-id="'+data.data._id+'"  class="userEdit" >Edit</button> | <button type="button" id="btndelete'+data.data._id+'" class="userDelete" onclick="fndelete(this,2)">Delete</button> </td></tr>');                        
                     $('#registration').each(function () 
                     {
                       this.reset(); //for reset formsss
@@ -227,7 +227,7 @@
       $('#userUpdate').show();
       $('#userReset').show();
       $('#userSubmit').hide();
-                                console.log("Mohit Chutiya")
+                                console.log("before edit ajax");
                                 let userData = $(this).data('id');
                         
                         console.log(userData);
@@ -242,6 +242,7 @@
                                     console.log(userData); 
                                     let userResponse = response.userData;
                                     console.log(response)
+                                    console.log("after edit ajax");
                                     $("#firstName").val(userResponse.firstName);
                                     $('#lastName').val(userResponse.lastName);
                                     $('#address').val(userResponse.address);
