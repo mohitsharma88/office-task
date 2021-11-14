@@ -21,6 +21,9 @@ router.post('/form', function (req, res, next){
   try{
         var userFile = req.files.pImg;
         var userFileName = req.files.pImg.name;
+
+
+        
         let userBodyData ={
           firstName: req.body.firstName,
           lastName: req.body.lastName,
@@ -62,41 +65,41 @@ router.delete('/:id',async function(req, res, next){
   }catch(e){
     console.log('error in delete'+e);
      res.json({status: "success"});
-  }
+  } 
  }); 
 
     //Delete User By ID
-    router.delete('/delete/:id', function (req, res) {
-      userModel.findByIdAndDelete(req.params.id, function (err, project) {
-        if (err) {
+    // router.delete('/delete/:id', function (req, res) {
+    //   userModel.findByIdAndDelete(req.params.id, function (err, project) {
+    //     if (err) {
 
-          console.log("Error in Record Delete " + err);
-          res.redirect('/display');
-        } else {
-          console.log(" Record Deleted ");
-          res.redirect('/display');
-          res.json()
-        }
-      });
-    });
+    //       console.log("Error in Record Delete " + err);
+    //       res.redirect('/display');
+    //     } else {
+    //       console.log(" Record Deleted ");
+    //       res.redirect('/display');
+    //       res.json()
+    //     }
+    //   });
+    // });
 
 //Display
-router.get('/display', function (req, res, next) {
-  userModel.find(function (err, dbUserArray) {
-    if (err) {
-      console.log("Error in Fetch Data " + err);
-    } else {
-      //Print Data in Console
-      console.log(dbUserArray);
-      //Render User Array in HTML Table
-      res.render('display', { userArray: dbUserArray });
+// router.get('/display', function (req, res, next) {
+//   userModel.find(function (err, dbUserArray) {
+//     if (err) {
+//       console.log("Error in Fetch Data " + err);
+//     } else {
+//       //Print Data in Console
+//       console.log(dbUserArray);
+//       //Render User Array in HTML Table
+//       res.render('display', { userArray: dbUserArray });
 
-    }
-  });
-});
+//     }
+//   });
+// });
 
 
-    router.get('/edit-user/:id', function (req, res) {
+    router.get('/:id', function (req, res) {
 
       console.log(req.params.id);
 
@@ -104,46 +107,49 @@ router.get('/display', function (req, res, next) {
         if (err) {
           console.log("Edit Fetch Error " + err);
         } else {
-          res.render('edit-user', { userArray: dbUserArray });
+          res.json({userArray: dbUserArray });
 
         }
       })
     }
     );
 
-    //Update Record Using Post Method
-    router.post('/edit-user/:id', function (req, res) {
+    // //Update Record Using Post Method
+    // router.post('/edit-user/:id', function (req, res) {
 
-      var userFile = req.files.pImg;
-      var userFileName = req.files.pImg.name;
+    //   var userFile = req.files.pImg;
+    //   var userFileName = req.files.pImg.name;
 
-      userFile.mv('public/productphoto/' + userFileName, function (err) {
-        if (err)
-          throw err;
-        //res.send('File uploaded!');
-      });
+    //   userFile.mv('public/productphoto/' + userFileName, function (err) {
+    //     if (err)
+    //       throw err;
+    //     //res.send('File uploaded!');
+    //   });
 
-      console.log("Edit ID is" + req.params.id);
+    //   console.log("Edit ID is" + req.params.id);
 
-      const userBodyData = {
-        firstName: req.body.firstName,
-        lasstName: req.body.lastName,
-        gender: req.body.gender,
-        address: req.body.address,
-        hobbies: req.body.hobbies,
-        pImg: userFileName,
-        interestArea: req.body.interestArea,
-      }
+    //   const userBodyData = {
+    //     firstName: req.body.firstName,
+    //     lasstName: req.body.lastName,
+    //     gender: req.body.gender,
+    //     address: req.body.address,
+    //     hobbies: req.body.hobbies,
+    //     pImg: userFileName,
+    //     interestArea: req.body.interestArea,
+    //   }
 
-      userModel.findByIdAndUpdate(req.params.id, userBodyData, function (err, dbUserArray) {
-        if (err) {
-          console.log("Error in Record Update");
-        } else {
-          console.log("Successfully edit" + dbUserArray)
-          res.redirect('/display');
-        }
-      });
-    });
+    //   userModel.findByIdAndUpdate(req.params.id, userBodyData, function (err, dbUserArray) {
+    //     if (err) {
+    //       console.log("Error in Record Update");
+    //     } else {
+    //       console.log("Successfully edit" + dbUserArray)
+    //       res.redirect('/display');
+    //     }
+    //   });
+    // });
 
 
     module.exports = router;
+
+
+    

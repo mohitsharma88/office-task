@@ -27,8 +27,8 @@ app.use('/users', usersRouter);
 
 //Db Connection Start 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://myproject:myproject@localhost:27017/myproject')
-  // mongoose.connect('mongodb://localhost:27017/adminpart')
+// mongoose.connect('mongodb://myproject:myproject@localhost:27017/myproject')
+mongoose.connect('mongodb://localhost:27017/adminpart')
 
   .then(() => console.log("Connection Open"))
   .catch(() => console.log("Error"))
