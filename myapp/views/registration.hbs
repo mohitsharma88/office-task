@@ -6,8 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="#">
+  
   <title>Document</title>
+  
   <script type="text/javascript" src="../jquery.js"></script>
+  <script type="text/javascript" src="/javascripts/users.js"></script>
   <link rel="stylesheet" href="../bootstrap.css">
   <link rel="stylesheet" href="../styles.css">
   {{!-- validation --}}
@@ -58,15 +61,15 @@
                   <div class="col-md-8 mb-4">
                     <label for="">Gender:</label>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="gender" id="gender" value="Female" />
+                      <input class="gender" type="radio" name="gender" id="Female" value="Female" />
                       <label class="form-check-label" for="femaleGender">Female</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="gender" id="gender" value="Male" />
+                      <input class="gender" type="radio" name="gender" id="Male" value="Male" />
                       <label class="form-check-label" for="maleGender">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="form-check-input" type="radio" name="gender" id="gender" value="other" />
+                      <input class="gender" type="radio" name="gender" id="other" value="other" />
                       <label class="form-check-label" for="otherGender">Other</label> <br><br>
                     </div>
                     <div class="row">
@@ -81,29 +84,29 @@
                       <div class="col-md-6 mb-4 pb-2">
                         <label for="">Hobbies:</label>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="flexCheckDefault" name="hobbies"
-                            id="hobbies" value="Cricket">
+                          <input  type="checkbox"  name="hobbies"
+                            id="cricket" value="cricket" class="hobbies">
                           <label class="form-check-label" for="flexCheckDefault">
                             Cricket
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="flexCheckChecked" name="hobbies"
-                            id="hobbies" value="basketball">
+                          <input  type="checkbox"  name="hobbies"
+                            id="basketBall" value="basketball" class="hobbies">
                           <label class="form-check-label" for="flexCheckChecked">
                             BasketBall
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="flexCheckChecked" value="chess"
-                            id="hobbies" name="hobbies">
+                          <input  type="checkbox"  value="chess"
+                            id="chess" name="hobbies" class="hobbies">
                           <label class="form-check-label" for="flexCheckChecked">
                             Chess
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="flexCheckChecked" value="football"
-                            id="hobbies" name="hobbies">
+                          <input  type="checkbox"  value="football"
+                            id="football" name="hobbies" class="hobbies">
                           <label class="form-check-label" for="flexCheckChecked">
                             Football
                           </label>
@@ -127,12 +130,12 @@
                     <div class="col-12">
                       <input type="file" name="pImg" id="pImg" />
                     </div>
-                    <label for="">Passport Photo</label>
+                    <div class="pImg"></div>
                   </div>
                   <div class="mt-4 pt-2">
                     <input class="btn btn-primary btn-lg" type="submit" id="userSubmit"  value="Submit" />
                     <input class="btn btn-primary btn-lg" type="reset"  id="userReset"  value="Reset" style=display:none />
-                    <input class="btn btn-primary btn-lg" type="submit"  id="userUpdate" value="Update" style=display:none />
+                    <input class="btn btn-primary btn-lg" type="button"  id="userUpdate" value="Update" data-id=""  style=display:none />
                   </div>
                   
                   <div>
@@ -168,117 +171,6 @@
     </div>
   </section>
 </body>
-<script>
-  $("document").ready(function (){
-    $("#registration").validate({
-        rules:{
-          firstName:{required: true,minlength: 3},
-          lastName: {required: true},
-          gender:{required: true},
-          address:{required: true,minlength: 5},
-          hobbies:{required: true},
-          interestArea:{required: true},
-          pImg:{required: true}
-        },
-        messages:{
-          firstname: 
-          { required: "Please enter your firstname",minlength: "Firstname must be at least 3 characters"},
-          lastname:{ required: "Please enter your lastname"},
-          gender:{required: "Please select a gender"},
-          address: {required: "Please Enter Address",minlength: "Your Address must be at least 5 characters long"},
-          hobbies: {required: "Please select a hobbies"},
-          interestArea: {required: "Please Choose Ineterested Field"},
-          img: {required: "Please select Passport Photo "},
-        },  
-        submitHandler: function(form){                                           
-            let databus = new FormData($(form).get(0));
-            $.ajax({
-              url: '/form',
-              type: 'post',
-              data: databus,
-              enctype: "multipart/form-data",
-              contentType: false,
-              cache: false,
-              processData: false,
-              success: function (data){
-                console.log(data,"data");
-                if (data.status == "success"){
-                  console.log(data.data.pImg);
-                    $('#tableId').append('<tr id="'+data.data._id+'"><td>'+data.data.firstName+'</td><td>'+data.data.lastName+'</td><td>'+data.data.gender+'</td><td>'+data.data.address+
-                      '</td><td><img style="width: 100px" src=/images/'+data.data.pImg+
-                      '></td><td> <button type="button" id="userEdit2" data-id="'+data.data._id+'"  class="userEdit" >Edit</button> | <button type="button" id="btndelete'+data.data._id+'" class="userDelete" onclick="fndelete(this,2)">Delete</button> </td></tr>');                        
-                    $('#registration').each(function () 
-                    {
-                      this.reset(); //for reset formsss
-                    });
-                }else{
-                  alert("error")
-                }
-                //console.log(data) 
-                     
-                return false;
-              }
-            });                             
-        },
-    });   
-    console.log("before defi");
-    $(document).on('click','.userEdit',function(){
-      console.log("indise edit")
-      $('#userUpdate').show();
-      $('#userReset').show();
-      $('#userSubmit').hide();
-                                console.log("before edit ajax");
-                                let userData = $(this).data('id');
-                        
-                        console.log(userData);
-      //                  $("#userUpdate").append("<input style=background-color:orange type=button data-id='" + userData + "' class = update value=Update>");
-                        
-                        console.log("userRecord"+userData)
-                            $.ajax({
-                                url:'/'+userData,
-                                type:'GET',
-                                data : {id: userData},
-                                success : function(response) {
-                                    console.log(userData); 
-                                    let userResponse = response.userData;
-                                    console.log(response)
-                                    console.log("after edit ajax");
-                                    $("#firstName").val(userResponse.firstName);
-                                    $('#lastName').val(userResponse.lastName);
-                                    $('#address').val(userResponse.address);
-                                    $('#gender').prop('checked','checked');
-                                    for(let i=0;i<userResponse.hobbies.length;i++){
-                                        console.log(userResponse.hobbies[i])
-                                        $('#hobbies').prop('checked','checked');
-                                    }
-                                    $('#area').val(userResponse.interestArea);
-                                    $('#pImg').append('<img src=/images/'+userResponse.image+'>');
-                                },
-                                error : function(err) {
-                                    console.log(err);
-                                }
-                            }); 
-    })
-    $('#userReset').click(function(){ //when user click reset
-      console.log("inside user reset")
-      $('#userUpdate').hide();
-      $('#userReset').hide();
-      $('#userSubmit').show();
-    }) 
-  }) 
-//Delete
-  function fndelete(event,flag){  //function call which accept (this) flag 1 for database button and flag 2 for ajax button
-    var userId = flag == 1 ? event.path[2].id : event.id.replace('btndelete', ''); //if flag 1 then id replace with 'btndelete' ''
-    $.ajax({
-      url:'/'+userId+'',
-      type:'delete',
-      success : function(data){ 
-        if(data.status == "success")
-           $('#'+userId).remove();
-      }
-    });
-  }
-  
-</script>
+
 </html>
 

@@ -2,6 +2,7 @@ const { response } = require('express');
 var express = require('express');
 var router = express.Router();
 var userModel = require("../schema/user-table");
+const uri = 'http://localhost:4000/form';
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
@@ -17,13 +18,10 @@ router.get('/form', function (req, res, next)
   });
 });
 
-router.post('/form', function (req, res, next){
+router.post('/form',async function (req, res, next){
   try{
         var userFile = req.files.pImg;
         var userFileName = req.files.pImg.name;
-
-
-        
         let userBodyData ={
           firstName: req.body.firstName,
           lastName: req.body.lastName,
@@ -34,7 +32,7 @@ router.post('/form', function (req, res, next){
           pImg: userFileName
         }
         // console.log("userBodyData" + userBodyData.firstName);
-        var data = userModel(userBodyData)
+        var data =await userModel(userBodyData)
         console.log("data is "+data);
         data.save(function (err, user){
           if (err){
@@ -47,14 +45,12 @@ router.post('/form', function (req, res, next){
                 });                
               }
         });
-      }  
+  }  
   catch (error){
       console.log(error);
       res.json({ status: "error" })
   }
 });  
-
-
 router.delete('/:id',async function(req, res, next){
   try{
    let userId = req.params.id;
@@ -64,10 +60,66 @@ router.delete('/:id',async function(req, res, next){
      
   }catch(e){
     console.log('error in delete'+e);
-     res.json({status: "success"});
+     res.json({status: "error",userarray : userData});
   } 
  }); 
+  
+//edit 
+    router.get('/:id',async function (req, res) {
+     try{
+      console.log(req.params.id);
+      let userEdit = await userModel.findById(req.params.id);
+      res.json({userArray: userEdit});
+    }catch(error)
+     {
+        res.send(error)
+     }
 
+    });
+  
+    //Update Record Using Put Method
+    console.log("outside put")
+    router.put('/:id', async function (req, res) {
+      try{
+        console.log("inside put")
+        if(req.files != null)
+        {
+          var userFile = req.files.pImg;
+          var userFileName = req.files.pImg.name;
+          console.log("file name is"+userFileName);
+          userFile.mv("public/images/" + userFileName, function (err) {
+          if (err)
+            throw err;
+        });
+        }
+        
+        console.log("Edit ID is" + req.params.id);
+        
+        const userBodyData = {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          gender: req.body.gender,
+          address: req.body.address,
+          hobbies: req.body.hobbies,
+          pImg: userFileName,
+          interestArea: req.body.interestArea,
+        }
+        console.log(userBodyData);
+        await userModel.updateOne({_id:req.params.id }, userBodyData)
+        const userData = await userModel.findOne({_id:req.params.id })  
+           console.log("Successfully edit" + userData);
+        res.json({userArray:userData});
+      }catch(error)
+      {
+        console.log("---------------------------------");
+        console.log(error);
+        res.send(error)
+      }
+    });
+module.exports = router;
+   
+   
+   
     //Delete User By ID
     // router.delete('/delete/:id', function (req, res) {
     //   userModel.findByIdAndDelete(req.params.id, function (err, project) {
@@ -82,8 +134,8 @@ router.delete('/:id',async function(req, res, next){
     //     }
     //   });
     // });
-
-//Display
+    
+// Display
 // router.get('/display', function (req, res, next) {
 //   userModel.find(function (err, dbUserArray) {
 //     if (err) {
@@ -97,59 +149,4 @@ router.delete('/:id',async function(req, res, next){
 //     }
 //   });
 // });
-
-
-    router.get('/:id', function (req, res) {
-
-      console.log(req.params.id);
-
-      userModel.findById(req.params.id, function (err, dbUserArray) {
-        if (err) {
-          console.log("Edit Fetch Error " + err);
-        } else {
-          res.json({userArray: dbUserArray });
-
-        }
-      })
-    }
-    );
-
-    // //Update Record Using Post Method
-    // router.post('/edit-user/:id', function (req, res) {
-
-    //   var userFile = req.files.pImg;
-    //   var userFileName = req.files.pImg.name;
-
-    //   userFile.mv('public/productphoto/' + userFileName, function (err) {
-    //     if (err)
-    //       throw err;
-    //     //res.send('File uploaded!');
-    //   });
-
-    //   console.log("Edit ID is" + req.params.id);
-
-    //   const userBodyData = {
-    //     firstName: req.body.firstName,
-    //     lasstName: req.body.lastName,
-    //     gender: req.body.gender,
-    //     address: req.body.address,
-    //     hobbies: req.body.hobbies,
-    //     pImg: userFileName,
-    //     interestArea: req.body.interestArea,
-    //   }
-
-    //   userModel.findByIdAndUpdate(req.params.id, userBodyData, function (err, dbUserArray) {
-    //     if (err) {
-    //       console.log("Error in Record Update");
-    //     } else {
-    //       console.log("Successfully edit" + dbUserArray)
-    //       res.redirect('/display');
-    //     }
-    //   });
-    // });
-
-
-    module.exports = router;
-
-
-    
+ 
