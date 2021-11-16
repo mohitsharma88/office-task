@@ -136,31 +136,32 @@
                     <input class="btn btn-primary btn-lg" type="submit" id="userSubmit"  value="Submit" />
                     <input class="btn btn-primary btn-lg" type="reset"  id="userReset"  value="Reset" style=display:none />
                     <input class="btn btn-primary btn-lg" type="button"  id="userUpdate" value="Update" data-id=""  style=display:none />
-                  </div>
-                  
+                  </div>                 
                   <div>
                     <h1>Display Table</h1>
                     <table border='1' id="tableId" >
-                      <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Gender</th>
-                        <th>Address</th>
+                      <thead>
+                        <th> <a data-key="firstName" data-order="asc" class="sort">First Name</a></th>
+                        <th> <a data-key="lastName" data-order="asc" class="sort">Last Name </a></th>
+                        <th> <a data-key="gender" data-order="asc" class="sort">Gender</a></th>
+                        <th> <a data-key="address" data-order="asc" class="sort">Address</a></th>
                         <th>Photo</th>
                         <th>Action</th>
-                      </tr>
+                      </thead>
+                      <tbody class="tableBody">
                       {{#each userArray }}
                       <tr id={{_id}} class={{_id}}>
-                          <td>{{ firstName }}</td>
-                          <td>{{ lastName }} </td>
-                          <td>{{ gender }}</td>
-                          <td>{{ address }}</td>
-                          <td><img src="/images/{{pImg}}" style="width: 100px;"></td>
-                          <td> <button type="button" value="{{_id}}" id="userEdit1"  class="userEdit" data-id="{{_id}}" >Edit</button>
+                          <td class="tableData" >{{ firstName }}</td>
+                          <td class="tableData">{{ lastName }} </td>
+                          <td class="tableData">{{ gender }}</td>
+                          <td class="tableData">{{ address }}</td>
+                          <td class="tableData"><img src="/images/{{pImg}}" style="width: 100px;"></td>
+                          <td class="tableData"> <button type="button" value="{{_id}}" id="userEdit1"  class="userEdit" data-id="{{_id}}" >Edit</button>
                               <button type="button"  value="{{_id}}" class="userDelete" onclick="fndelete(event,1)">Delete</button>
                           </td>
                       </tr>
-                      {{/each}}                   
+                      {{/each}}
+                     </tbody>                    
                   </table>
                 </div>                 
               </form> 

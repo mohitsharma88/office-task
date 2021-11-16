@@ -3,19 +3,24 @@ var express = require('express');
 var router = express.Router();
 var userModel = require("../schema/user-table");
 const uri = 'http://localhost:4000/form';
+var sort;
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
-router.get('/form', function (req, res, next) 
+router.get('/form',async function (req, res, next) 
 {
-  userModel.find(function (err, dbUserArray){
-    if(err){
-      console.log("Error in Fetch Data " + err);
-    } else{
-      res.render('registration',{userArray:dbUserArray}); //Render User Array in HTML Table   
-    }
-  });
+  try{
+    console.log("******");
+    console.log(req.body);
+    let userData = await userModel.find();
+    res.render('registration',{userArray:userData}); //Render User Array in HTML Table  
+  }
+  catch(error)
+  {
+    console.log(error);
+    res.send(error)
+  }
 });
 
 router.post('/form',async function (req, res, next){
@@ -63,59 +68,84 @@ router.delete('/:id',async function(req, res, next){
      res.json({status: "error",userarray : userData});
   } 
  }); 
-  
-//edit 
-    router.get('/:id',async function (req, res) {
-     try{
-      console.log(req.params.id);
-      let userEdit = await userModel.findById(req.params.id);
-      res.json({userArray: userEdit});
-    }catch(error)
-     {
-        res.send(error)
-     }
 
-    });
-  
-    //Update Record Using Put Method
-    console.log("outside put")
-    router.put('/:id', async function (req, res) {
-      try{
-        console.log("inside put")
-        if(req.files != null)
-        {
-          var userFile = req.files.pImg;
-          var userFileName = req.files.pImg.name;
-          console.log("file name is"+userFileName);
-          userFile.mv("public/images/" + userFileName, function (err) {
-          if (err)
-            throw err;
-        });
-        }
-        
-        console.log("Edit ID is" + req.params.id);
-        
-        const userBodyData = {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          gender: req.body.gender,
-          address: req.body.address,
-          hobbies: req.body.hobbies,
-          pImg: userFileName,
-          interestArea: req.body.interestArea,
-        }
-        console.log(userBodyData);
-        await userModel.updateOne({_id:req.params.id }, userBodyData)
-        const userData = await userModel.findOne({_id:req.params.id })  
-           console.log("Successfully edit" + userData);
-        res.json({userArray:userData});
-      }catch(error)
+//edit 
+  router.get('/:id',async function (req, res) {
+   try{
+    console.log(req.params.id);
+    let userEdit = await userModel.findById(req.params.id);
+    res.json({userArray: userEdit});
+  }catch(error)
+   {
+      res.send(error)
+   }
+  });
+
+  //Update Record Using Put Method
+  console.log("outside put")
+  router.put('/:id', async function (req, res) {
+    try{
+      console.log("inside put")
+      if(req.files != null)
       {
-        console.log("---------------------------------");
-        console.log(error);
-        res.send(error)
+        var userFile = req.files.pImg;
+        var userFileName = req.files.pImg.name;
+        console.log("file name is"+userFileName);
+        userFile.mv("public/images/" + userFileName, function (err) {
+        if (err)
+          throw err;
+      });
       }
-    });
+      
+      console.log("Edit ID is" + req.params.id);
+      
+      const userBodyData = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        gender: req.body.gender,
+        address: req.body.address,
+        hobbies: req.body.hobbies,
+        pImg: userFileName,
+        interestArea: req.body.interestArea,
+      }
+      console.log(userBodyData);
+      await userModel.updateOne({_id:req.params.id }, userBodyData)
+      const userData = await userModel.findOne({_id:req.params.id })  
+         console.log("Successfully edit" + userData);
+      res.json({userArray:userData});
+    }catch(error)
+    {
+      console.log("---------------------------------");
+      console.log(error);
+      res.send(error)
+    }
+  });
+
+  router.post('/',async function (req, res, next){
+    try{
+        console.log(req.body);
+        let value1= req.body.value 
+        console.log("value is"+value1);
+        if(value1 == "asc")
+        {
+          value1 = 1;
+        }else{
+          value1 = -1;
+        }
+        console.log("value is"+value1);
+        const sort= {[req.body.key]:value1};
+              //sort={[value]:req.body.value};  
+        let sortTable  = await userModel.find().sort({[req.body.key]:value1});
+        res.json({status : "success" , userArray : sortTable})
+        console.log(sort);
+
+    }catch(error)
+    {
+      console.log("error is :",error);
+      res.json({status : "error"});
+    }
+  });
+
 module.exports = router;
    
    
@@ -135,7 +165,7 @@ module.exports = router;
     //   });
     // });
     
-// Display
+// Display/form/:id
 // router.get('/display', function (req, res, next) {
 //   userModel.find(function (err, dbUserArray) {
 //     if (err) {
