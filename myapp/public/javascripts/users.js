@@ -1,6 +1,12 @@
 
-
+let gsort={
+  "key":"firstName",
+  "value":"asc"
+};
+let page=0;
+let previous=0;
   $("document").ready(function (){
+    
     $("#registration").validate({
         rules:{
           firstName:{required: true,minlength: 3},
@@ -103,55 +109,76 @@
       $('#userSubmit').show();
     })     
   })
-  
-  $(document).on('click', '.sort', function (){
-      console.log("inside sort");
-      console.log($(this).data('key'));
-      
-      let sort = {
-        key : $(this).data('key'),
-        value : $(this).data('order')
+  $(document).on('click', ' .next' , function (){
+    page++;
+    console.log("page is increment = ",page);
+  });
+  $(document).on('click', ' .previous' , function (){
+    page--;
+    console.log("page is decrement = ",page);
+  })
+  $(document).on('click', '.sort , .next' , function (){
+      console.log("page is",page);
+      let searchValue= $( "#search" ).val() //search value aaccept
+      let searchGender = $( "select#gender option:checked" ).val();
+      console.log("here",searchGender);
+      //undefine
+      if($(this).data('key') &&  $(this).data('order')){
+        gsort={
+          
+            key : $(this).data('key'),
+            value : $(this).data('order')
+          
+        }        
       }
-      console.log(sort);
-      console.log(this);
-      //let userData = $(this).data('sort');//data=custom attr
-      if(sort.value == 'asc')
+
+      console.log("gsort First",gsort);
+      let  search={
+        "sort":gsort,
+        search : {
+          "searchString" :searchValue,
+          "gender": searchGender
+        },
+        pagination : {
+          "page" : page
+        }   
+      }
+      console.log("sort second",gsort);
+      console.log("gsort value is",gsort.value);
+      console.log(search);
+      console.log(search.sort.value);
+      if(search.sort.value == 'asc')
       {
-          console.log("1");
+          console.log(" inside if");
           $(this).data('order','desc');
-      }else{
-          console.log("-1");
+      }else{ 
+          console.log("inside else");
           $(this).data('order','asc');
       }
-      console.log(this);
+      console.log("after is is",gsort);
+      //console.log(this);
       $.ajax({
         url: '/',
         type: 'post',
-        data: sort,
+        data: JSON.stringify(search),
+        dataType:'json',
+        contentType: 'application/json',
         success: function (data){
-          console.log(data);
-          
+          console.log("data is here",data);
           if (data.status == "success"){
             $('.tableBody').empty();
-            
             for (const iCnt of data.userArray) {
               $('#tableId').append('<tr><td>'+iCnt.firstName+'</td><td>'+iCnt.lastName+'</td><td>'+iCnt.gender+'</td><td>'+iCnt.address+
-                      '</td><td><img width="90px" src="/images/'+iCnt.pImg+
-                      '"></td><td> <button type="button" id="userEdit2" data-id="'+iCnt._id+
-                      '"  class="userEdit" >Edit</button>  <button type="button" id="btndelete'+iCnt._id+
-                      '" class="userDelete" onclick="fndelete(this,2)">Delete</button> </td></tr>');  
+              '</td><td><img width="90px" src="/images/'+iCnt.pImg+
+              '"></td><td> <button type="button" id="userEdit2" data-id="'+iCnt._id+
+              '"  class="userEdit" >Edit</button>  <button type="button" id="btndelete'+iCnt._id+
+              '" class="userDelete" onclick="fndelete(this,2)">Delete</button> </td></tr>');  
             }
-            
-          
-          }else{
-           
+          }else{          
           }
-          //console.log(data)                     
           return false;
         }
-      }); 
-
-    
+      });
   })
   
 //Delete
@@ -184,20 +211,21 @@
                   contentType: false,
                   success: function(response){
                     let userUpdateData=response.userArray;
+                    console.log("updated dta is",userUpdateData)
                     console.log("firstname is", userUpdateData.firstName);
-                    $("#tableId").html('<td>'+userUpdateData.firstName+'</td><td>'+userUpdateData.lastName+'</td><td>'
+                     $('.'+id).remove();
+                    $(".tableBody").append('<tr class='+userUpdateData._id+' ><td>'+userUpdateData.firstName+'</td><td>'+userUpdateData.lastName+'</td><td>'
                       +userUpdateData.gender+'</td><td>'+userUpdateData.address+'</td><td><img src="/images/'
                       +userUpdateData.pImg+'" height=100></td><td><button type="button" id="userEdit2" data-id='
                       +userUpdateData._id+'  class="userEdit" >Edit</button> | <button type="button" id="btndelete'
-                      +userUpdateData._id+' class="userDelete" onclick="fndelete(this,2)">Delete"</button></td>');
-                      
+                      +userUpdateData._id+' class="userDelete" onclick="fndelete(this,2)">Delete"</button></td><tr>');
                       alert("User Record has been successfully updated.")
+
                       $('#registration').each(function () 
                       {
-                        this.reset(); //for reset formsss
+                        this.reset(); //for reset forms
                       });
                       $('.pImg').remove();
-
                   },                  
                   error: function(err){
                     console.log(err);

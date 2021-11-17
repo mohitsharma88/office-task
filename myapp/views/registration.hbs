@@ -61,11 +61,11 @@
                   <div class="col-md-8 mb-4">
                     <label for="">Gender:</label>
                     <div class="form-check form-check-inline">
-                      <input class="gender" type="radio" name="gender" id="Female" value="Female" />
+                      <input class="gender" type="radio" name="gender" id="Female" value="female" />
                       <label class="form-check-label" for="femaleGender">Female</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="gender" type="radio" name="gender" id="Male" value="Male" />
+                      <input class="gender" type="radio" name="gender" id="Male" value="male" />
                       <label class="form-check-label" for="maleGender">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -131,7 +131,7 @@
                       <input type="file" name="pImg" id="pImg" />
                     </div>
                     <div class="pImg"></div>
-                  </div>
+                  </div> 
                   <div class="mt-4 pt-2">
                     <input class="btn btn-primary btn-lg" type="submit" id="userSubmit"  value="Submit" />
                     <input class="btn btn-primary btn-lg" type="reset"  id="userReset"  value="Reset" style=display:none />
@@ -139,6 +139,26 @@
                   </div>                 
                   <div>
                     <h1>Display Table</h1>
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <div class="form-outline">
+                          <input type="text" data-search="search" name="search" id="search" placeholder="Search" />
+                        </div>
+                      </div>
+                      <div>
+                        <select name="serachGender" id="gender">
+                          <option class="dropDown" id="all" data-gender="all" value="all">All</option>
+                          <option class="dropDown" id="male" data-gender="male" value="male">Male</option>
+                          <option class="dropDown" id="female" data-gender="female" value="female">Female</option>
+                          <option class="dropDown" id="other" data-gender="other" value="other">Other</option>
+                          
+                        </select>
+                      </div>
+                      <div>
+                        <button type="button" class="sort" id="search">Search</button>
+                        <button type="reset">Reset</button> <br><br>
+                      </div>
+                    </div>
                     <table border='1' id="tableId" >
                       <thead>
                         <th> <a data-key="firstName" data-order="asc" class="sort">First Name</a></th>
@@ -163,6 +183,8 @@
                       {{/each}}
                      </tbody>                    
                   </table>
+                  <button type="button" data-key="previous"  class="previous" id="previous">Previous</button>
+                  <button type="button" data-key="next"  class="next" id="previous" >Next</button>
                 </div>                 
               </form> 
             </div>

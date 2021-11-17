@@ -12,4 +12,4 @@ var myschema = new Schema({
     pImg:{type: String},
 });
 
-module.exports = mongoose.model('jpro',myschema);
+module.exports = mongoose.model('jpro',myschema); 

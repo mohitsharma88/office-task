@@ -4,6 +4,9 @@ var router = express.Router();
 var userModel = require("../schema/user-table");
 const uri = 'http://localhost:4000/form';
 var sort;
+let pageLimit=5;
+let skip;
+const limit=5;
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
@@ -13,7 +16,7 @@ router.get('/form',async function (req, res, next)
   try{
     console.log("******");
     console.log(req.body);
-    let userData = await userModel.find();
+    let userData = await userModel.find().limit(5);
     res.render('registration',{userArray:userData}); //Render User Array in HTML Table  
   }
   catch(error)
@@ -94,7 +97,7 @@ router.delete('/:id',async function(req, res, next){
         userFile.mv("public/images/" + userFileName, function (err) {
         if (err)
           throw err;
-      });
+        });
       }
       
       console.log("Edit ID is" + req.params.id);
@@ -120,24 +123,32 @@ router.delete('/:id',async function(req, res, next){
       res.send(error)
     }
   });
-
+  //sorting searching
   router.post('/',async function (req, res, next){
     try{
         console.log(req.body);
-        let value1= req.body.value 
-        console.log("value is"+value1);
-        if(value1 == "asc")
-        {
-          value1 = 1;
-        }else{
-          value1 = -1;
+        console.log("page is here",req.body.pagination.page);
+        skip=req.body.pagination.page*pageLimit;
+        console.log("skip is =",skip);
+
+        let searching = {};
+        if(req.body.search.searchString){
+          searching= {$or: [{firstName: req.body.search.searchString},
+                            {lastName:req.body.search.searchString},
+                            {address:req.body.search.searchString}]}
+          console.log(searching);
         }
-        console.log("value is"+value1);
-        const sort= {[req.body.key]:value1};
-              //sort={[value]:req.body.value};  
-        let sortTable  = await userModel.find().sort({[req.body.key]:value1});
-        res.json({status : "success" , userArray : sortTable})
-        console.log(sort);
+        console.log(req.body.search.gender);
+        if(req.body.search.gender== "male" || req.body.search.gender== "female" || req.body.search.gender== "other"){
+          searching.gender = req.body.search.gender;
+        }
+        console.log(searching);
+        let key2 = req.body.sort.key;
+        let value2 = req.body.sort.value;
+        let sortTable = await userModel.find(searching).sort({[key2] : value2}).skip(skip).limit(limit);
+        console.log(sortTable);  
+        //let sortTable  = await userModel.find().sort({[req.body.sort.key]:value1});
+        res.json({status : "success" , userArray : sortTable});
 
     }catch(error)
     {
