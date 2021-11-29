@@ -7,13 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="#">
   
-  <title>Document</title>
+  <title>Form Submission</title>
   
   <script type="text/javascript" src="../jquery.js"></script>
   <script type="text/javascript" src="/javascripts/users.js"></script>
   <link rel="stylesheet" href="../bootstrap.css">
   <link rel="stylesheet" href="../styles.css">
   {{!-- validation --}}
+  <script src="https://cdn.jsdelivr.net/npm/json-to-csv-export"></script>
   <script src="../bootstrap.js"></script>
   <style>
     .error {
@@ -61,11 +62,11 @@
                   <div class="col-md-8 mb-4">
                     <label for="">Gender:</label>
                     <div class="form-check form-check-inline">
-                      <input class="gender" type="radio" name="gender" id="Female" value="female" />
+                      <input class="gender" type="radio" name="gender" id="female" value="female" />
                       <label class="form-check-label" for="femaleGender">Female</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input class="gender" type="radio" name="gender" id="Male" value="male" />
+                      <input class="gender" type="radio" name="gender" id="male" value="male" />
                       <label class="form-check-label" for="maleGender">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -128,7 +129,7 @@
                   </div>
                   <div class="row">
                     <div class="col-12">
-                      <input type="file" name="pImg" id="pImg" />
+                      <input type="file" name="pImg" id="pImg" class="pImg" />
                     </div>
                     <div class="pImg"></div>
                   </div> 
@@ -151,42 +152,44 @@
                           <option class="dropDown" id="male" data-gender="male" value="male">Male</option>
                           <option class="dropDown" id="female" data-gender="female" value="female">Female</option>
                           <option class="dropDown" id="other" data-gender="other" value="other">Other</option>
-                          
                         </select>
                       </div>
                       <div>
                         <button type="button" class="sort" id="search">Search</button>
-                        <button type="reset">Reset</button> <br><br>
+                        <button type="reset">Reset</button> 
+                      </div>
+                      <div>
+                        <div class="col-md-12 mb-4">
+                          <button type="button" class="btn btn-info btn-lg" id="export" data-exBtn="export" value="export">Export</button>
+                          {{!-- <button type="button"  class="exportGmail"  value="exportGmail" >Export To Gmail</button> --}}
+                          <button type="button" class="btn btn-info btn-lg"   data-toggle="modal" data-target="#myModal">Export To Gmail</button>
+                          <!-- Modal -->
+                          <div id="myModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">  
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" id="dismiss" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                  Enter Gmail Id
+                                 <input type="email" name="exportGmail" id="exportGmailInput" /><br>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" data-dismiss="modal" value="exportGmail" id="exportGmail">Send</button>
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <table border='1' id="tableId" >
-                      <thead>
-                        <th> <a data-key="firstName" data-order="asc" class="sort">First Name</a></th>
-                        <th> <a data-key="lastName" data-order="asc" class="sort">Last Name </a></th>
-                        <th> <a data-key="gender" data-order="asc" class="sort">Gender</a></th>
-                        <th> <a data-key="address" data-order="asc" class="sort">Address</a></th>
-                        <th>Photo</th>
-                        <th>Action</th>
-                      </thead>
-                      <tbody class="tableBody">
-                      {{#each userArray }}
-                      <tr id={{_id}} class={{_id}}>
-                          <td class="tableData" >{{ firstName }}</td>
-                          <td class="tableData">{{ lastName }} </td>
-                          <td class="tableData">{{ gender }}</td>
-                          <td class="tableData">{{ address }}</td>
-                          <td class="tableData"><img src="/images/{{pImg}}" style="width: 100px;"></td>
-                          <td class="tableData"> <button type="button" value="{{_id}}" id="userEdit1"  class="userEdit" data-id="{{_id}}" >Edit</button>
-                              <button type="button"  value="{{_id}}" class="userDelete" onclick="fndelete(event,1)">Delete</button>
-                          </td>
-                      </tr>
-                      {{/each}}
-                     </tbody>                    
-                  </table>
-                  <button type="button" data-key="previous"  class="previous" id="previous">Previous</button>
-                  <button type="button" data-key="next"  class="next" id="previous" >Next</button>
+                    <div class="tableData">
+                         {{> table}}
+                    </div>
                 </div>                 
-              </form> 
+              </form>  
             </div>
           </div>
         </div>
@@ -194,6 +197,5 @@
     </div>
   </section>
 </body>
-
 </html>
 

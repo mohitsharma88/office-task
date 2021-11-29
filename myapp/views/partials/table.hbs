@@ -1,0 +1,65 @@
+<table border='1' id="tableId" >
+                      <thead>
+                        <th> <a data-key="firstName" data-order="asc" class="sort">First Name</a></th>
+                        <th> <a data-key="lastName" data-order="asc" class="sort">Last Name </a></th>
+                        <th> <a data-key="gender" data-order="asc" class="sort">Gender</a></th>
+                        <th> <a data-key="address" data-order="asc" class="sort">Address</a></th>
+                        <th>Photo</th>
+                        <th>Action</th>
+                      </thead>
+                      <tbody class="tableBody">
+                      {{#each userArray }}
+                      <tr id={{_id}} class={{_id}}>
+                          <td class="tableData" >{{ firstName }}</td>
+                          <td class="tableData">{{ lastName }} </td>
+                          <td class="tableData">{{ gender }}</td> 
+                          <td class="tableData">{{ address }}</td>
+                          <td class="tableData"><img src="/images/{{pImg}}" style="width: 100px;"></td>
+                          <td class="tableData"> 
+                              <button type="button" value="{{_id}}" data-id="{{_id}}" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">View</button>
+                              <input type="hidden" value={{pImg}} class="currentImg">
+                              <button type="button"  id="userView"  class="userView"  >View</button>
+                              <button type="button" value="{{_id}}" id="userEdit1"  class="userEdit" data-id="{{_id}}" >Edit</button>
+                              <button type="button"  value="{{_id}}" data-id="{{_id}}" class="userDelete" >Delete</button>
+                          </td>
+                      </tr>
+                      {{/each}}
+                     </tbody>                    
+                  </table>
+                  <button type="button" data-key="previous" value="previous" class="previous" id="previous">Previous</button>
+                  {{#record pageData}}
+                    {{this}}
+                  {{/record}}
+                  <button type="button" data-key="next"  class="next" value="next" id="next">Next</button>
+                  
+                  {{#each totalData}}
+                    <button type="button" value="" class="pageButton" id="pageButton"></button>
+                  {{/each}}
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-body">
+                                    <img class="img-responsive" src="" alt="image" class="modalImg"/>
+                                     
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Edit</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>

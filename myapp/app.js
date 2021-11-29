@@ -3,8 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const {engine} = require('express-handlebars');
+const hbsHelper = require('./views/helpers/handlebars')
+const _handlebars = require('handlebars');
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access');
+const nodemailer = require("nodemailer");
+const fs=require("fs");
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
+//fs = require('./public/file');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -12,6 +19,7 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+app.engine('hbs', engine({ defaultLayout: false,extname:".hbs",  helpers : hbsHelper,handlebars: allowInsecurePrototypeAccess(_handlebars)}))
 app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
